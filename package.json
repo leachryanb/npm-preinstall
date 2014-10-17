@@ -1,0 +1,22 @@
+{
+  "name": "eis-prerelease",
+  "description": "Reads in build.properties.json and npm|bower installs packages found in package.json and bower.json, parsing url ref as necessary.  Uses --save-dev flag.  Then npm install runs as normal with shrinkwrap.",
+  "version": "0.0.1",
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "http://as-gitmaster.epnet.com:7990/scm/rd/eis-release.git"
+  },
+  "dependencies": {
+    "findup-sync": "^0.1.3",
+    "git-tools": "^0.1.1",
+    "jshint-stylish": "~0.1.5",
+    "lodash": "^2.4.1",
+    "npm": "^2.1.2",
+    "when": "^3.5.0"
+  },
+  "main": "main.js",
+  "bin": {
+    "eis-prerelease": "main.js"
+  }
+}
