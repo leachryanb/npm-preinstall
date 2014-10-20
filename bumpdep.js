@@ -63,20 +63,27 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 };
 
 module.exports = function(name, tag) {
-	var mngrProms = [];
+	var npmProm = when.defer(),
+		bowerProm = when.defer(),
+		mngrProms = [npmProm, bowerProm],
+		pkgPath;
 
-	['package.json','bower.json'].forEach(function(pkgFile) {
-		var pkgPath = findup(pkgFile),
-			deferred = when.defer();
+	pkgPath = findup('package.json');
+	if (fs.existsSync(pkgPath)) {
+		updateReference(pkgPath, name, tag, npmProm);
+		mngrProms.push(npmProm.promise);
+	} else {
+		npmProm.resolve();
+	}
 
-		console.log('Checking %s', pkgFile);
-		mngrProms.push(deferred.promise);
-		if (fs.existsSync(pkgPath)) {
-			updateReference(pkgPath, name, tag, deferred);
-		} else {
-			deferred.resolve();
-		}
-	});
+	pkgPath = findup('bower.json');
+	if (fs.existsSync(pkgPath)) {
+		npmProm.then(function() {
+			updateReference(pkgPath, name, tag, bowerProm);
+		});
+	} else {
+		bowerProm.resolve();
+	}
 
 	when.all(mngrProms).done(function() {
 		console.log('Finished updating dependency: %s@%s', name, tag);
