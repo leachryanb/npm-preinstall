@@ -43,7 +43,7 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 		if (manager === 'bower') {
 			cmdData.flag = '--allow-root --config.interactive=false ' + cmdData.flag;
 		} else {
-			cmdData.flag += ' --save-exact';
+			cmdData.flag = '--save-exact ' + cmdData.flag;
 		}
 
 		if (depsHash && depsHash[pkgName]) {
@@ -63,26 +63,25 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 };
 
 module.exports = function(name, tag) {
-	var npmProm = when.defer(),
-		bowerProm = when.defer(),
-		mngrProms = [npmProm.promise, bowerProm.promise],
+	var npmDefer = when.defer(),
+		bowerDefer = when.defer(),
+		mngrProms = [npmDefer.promise, bowerDefer.promise],
 		pkgPath;
 
 	pkgPath = findup('package.json');
 	if (fs.existsSync(pkgPath)) {
-		updateReference(pkgPath, name, tag, npmProm);
-		mngrProms.push(npmProm.promise);
+		updateReference(pkgPath, name, tag, npmDefer);
 	} else {
-		npmProm.resolve();
+		npmDefer.resolve();
 	}
 
 	pkgPath = findup('bower.json');
 	if (fs.existsSync(pkgPath)) {
-		npmProm.then(function() {
-			updateReference(pkgPath, name, tag, bowerProm);
+		npmDefer.promise.then(function() {
+			updateReference(pkgPath, name, tag, bowerDefer);
 		});
 	} else {
-		bowerProm.resolve();
+		bowerDefer.resolve();
 	}
 
 	when.all(mngrProms).done(function() {
