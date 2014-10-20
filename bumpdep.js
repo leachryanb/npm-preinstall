@@ -10,11 +10,11 @@ var formatReference = function(pkgRef, pkgName, pkgVersion) {
 };
 
 var updateReference = function(pkgFile, pkgName, pkgVersion) {
-	var thisPkg = require(pkgFile);
+	var thisPkg = require(pkgFile),
+		pkgRef;
 
 	['dependencies', 'devDependencies'].forEach(function(key) {
-		var depsHash = thisPkg[key],
-			pkgRef;
+		var depsHash = thisPkg[key];
 
 		if (depsHash && depsHash[pkgName]) {
 			pkgRef = formatReference(depsHash[pkgName], pkgName, pkgVersion);
@@ -22,7 +22,11 @@ var updateReference = function(pkgFile, pkgName, pkgVersion) {
 			depsHash[pkgName] = pkgRef;
 		}
 	});
-	fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+
+	if (pkgRef) {
+		fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+		console.log('Successfully updated %s', pkgFile);
+	}
 };
 
 module.exports = function(name, tag) {
@@ -35,7 +39,6 @@ module.exports = function(name, tag) {
 		}
 	});
 
-	console.log('Finished updating dependency: %s@%s', name, tag);
 };
 
 
