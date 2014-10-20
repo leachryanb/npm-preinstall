@@ -41,7 +41,7 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 			cmd = '<%=mngr%> install <%=flag%> <%=repo%><%=tag%>';
 
 		if (manager === 'bower') {
-			cmdData.flag = '--allow-root -f ' + cmdData.flag;
+			cmdData.flag = '--allow-root ' + cmdData.flag;
 		}
 
 		if (depsHash && depsHash[pkgName]) {
@@ -49,9 +49,9 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 			console.log('Updating dependency using command:');
 			console.log(_.template(cmd, cmdData));
 			exec(_.template(cmd, cmdData), function(err, stdOut, stdErr) {
-				if (err || stdErr) {
-					throw(err || stdErr);
-				}
+				// if (err || stdErr) {
+				// 	throw(err || stdErr);
+				// }
 				console.log(stdOut);
 				deferred.resolve();
 			});
