@@ -65,7 +65,7 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 module.exports = function(name, tag) {
 	var npmProm = when.defer(),
 		bowerProm = when.defer(),
-		mngrProms = [npmProm, bowerProm],
+		mngrProms = [npmProm.promise, bowerProm.promise],
 		pkgPath;
 
 	pkgPath = findup('package.json');
