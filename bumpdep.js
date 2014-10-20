@@ -24,8 +24,8 @@ var updateReference = function(pkgFile, pkgName, pkgVersion) {
 			depsHash[pkgName] = pkgRef;
 		}
 	});
-	console.log(thisPkg);
-	// fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+	// console.log(thisPkg);
+	fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
 };
 
 module.exports = function(name, tag) {
