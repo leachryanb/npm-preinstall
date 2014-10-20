@@ -53,6 +53,7 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 			exec(_.template(cmd, cmdData), function(err, stdOut, stdErr) {
 				if (err || stdErr) {
 					console.error(err || stdErr);
+					deferred.reject(err);
 				}
 				console.log(stdOut);
 				deferred.resolve();
