@@ -33,7 +33,7 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 	['dependencies', 'devDependencies'].forEach(function(key) {
 		var depsHash = thisPkg[key],
 			cmdData = {
-				flag: (key === 'dependencies' ? '--save' : '--save-dev') + ' --save-exact',
+				flag: (key === 'dependencies' ? '--save' : '--save-dev'),
 				repo: pkgName,
 				tag: pkgVersion,
 				mngr: manager
@@ -41,7 +41,9 @@ var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
 			cmd = '<%=mngr%> install <%=flag%> <%=repo%><%=tag%>';
 
 		if (manager === 'bower') {
-			cmdData.flag = '--allow-root ' + cmdData.flag;
+			cmdData.flag = '--allow-root --config.interactive=false ' + cmdData.flag;
+		} else {
+			cmdData.flag += ' --save-exact';
 		}
 
 		if (depsHash && depsHash[pkgName]) {

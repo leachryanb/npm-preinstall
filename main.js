@@ -9,7 +9,7 @@ if (fs.existsSync(buildProps)) {
 	buildProps = require(buildProps);
 	Object.keys(buildProps).forEach(function(pkgName) {
 		var pkgVersion = buildProps[pkgName];
-		console.log('Bumping dependency %s@%s',pkgName,pkgVersion);
+		console.log('Upstream dependency changes: %s@%s',pkgName,pkgVersion);
 		bumpdep(pkgName,pkgVersion);
 	});
 }
