@@ -1,5 +1,4 @@
 var fs = require('fs'),
-	_ = require('lodash'),
 	when = require('when'),
 	findup = require('findup-sync');
 
@@ -11,7 +10,8 @@ var formatReference = function(pkgRef, pkgName, pkgVersion) {
 	}
 };
 
-var updateReference = function(pkgFile, pkgName, pkgVersion) {
+var updateReference = function(pkgFile, pkgName, pkgVersion, deferred) {
+	console.log('Updating %s', pkgFile);
 	var thisPkg = require(pkgFile);
 
 	['dependencies', 'devDependencies'].forEach(function(key) {
@@ -24,31 +24,29 @@ var updateReference = function(pkgFile, pkgName, pkgVersion) {
 			depsHash[pkgName] = pkgRef;
 		}
 	});
-	// console.log(thisPkg);
-	fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+	fs.writeFile(pkgFile, JSON.stringify(thisPkg, null, '  '), function(err) {
+		if (err) {
+			deferred.reject(err);
+		} else {
+			console.log('%s updated', pkgFile);
+		}
+	});
 };
 
 module.exports = function(name, tag) {
-	var npmDefer = when.defer(),
-		bowerDefer = when.defer(),
-		mngrProms = [npmDefer.promise, bowerDefer.promise],
-		pkgPath;
+	var mngrProms = [];
 
-	pkgPath = findup('package.json');
-	if (fs.existsSync(pkgPath)) {
-		updateReference(pkgPath, name, tag, npmDefer);
-	} else {
-		npmDefer.resolve();
-	}
+	['package.json','bower.json'].forEach(function(pkgFile){
+		var deferred = when.defer(),
+			pkgPath = findup(pkgFile);
 
-	pkgPath = findup('bower.json');
-	if (fs.existsSync(pkgPath)) {
-		npmDefer.promise.then(function() {
-			updateReference(pkgPath, name, tag, bowerDefer);
-		});
-	} else {
-		bowerDefer.resolve();
-	}
+		if (fs.existsSync(pkgPath)) {
+			mngrProms.push(deferred.promise);
+			updateReference(pkgPath, name, tag, deferred);
+		} else {
+			deferred.resolve();
+		}
+	});
 
 	when.all(mngrProms).done(function() {
 		console.log('Finished updating dependency: %s@%s', name, tag);
