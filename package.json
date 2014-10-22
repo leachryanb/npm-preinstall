@@ -1,7 +1,7 @@
 {
-  "name": "eis-prerelease",
-  "description": "Reads in build.properties.json and npm|bower installs packages found in package.json and bower.json, parsing url ref as necessary.  Uses --save-dev flag.  Then npm install runs as normal with shrinkwrap.",
-  "version": "0.0.1",
+  "name": "npm-preinstall",
+  "description": "Reads in package versions from build.properties.json and updates the same packages found in package.json and bower.json, parsing url ref as necessary.",
+  "version": "0.0.2",
   "readme": "README.md",
   "repository": {
     "type": "git",
@@ -12,6 +12,6 @@
   },
   "main": "main.js",
   "bin": {
-    "eis-prerelease": "main.js"
+    "npm-preinstall": "main.js"
   }
 }
