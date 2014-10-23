@@ -3,17 +3,31 @@
 var fs = require('fs'),
 	path = require('path'),
 	findup = require('findup-sync'),
-	buildProps = path.resolve(process.cwd(),'build.properties.json');
+	program = require('commander'),
+	semver = require('semver'),
+	pkg = require('./package.json'),
+	buildProps = path.resolve(process.cwd(),'build.properties.json'),
+	args = {};
 
-var formatReference = function(pkgRef, pkgName, pkgVersion) {
+program
+	.version(pkg.version)
+	.parse(process.argv);
+
+program.args.forEach(function(val) {
+	val = val.split('=');
+	args[val[0]] = val.length>1 ? val[1] : true;
+});
+
+var formatReference = function(pkgRef, pkgName, pkgTag) {
 	if (/#|\/\//g.test(pkgRef)) {
-		return pkgRef.split('#')[0] + '#' + pkgVersion;
+		pkgRef = pkgRef.split('#')[0];
+		return pkgRef + '#' + pkgTag;
 	} else {
-		return pkgVersion;
+		return semver.clean(pkgTag);
 	}
 };
 
-var updateReference = function(pkgFile, pkgName, pkgVersion) {
+var updateReference = function(pkgFile, pkgName, pkgTag) {
 	var thisPkg = require(pkgFile),
 		pkgRef;
 
@@ -21,14 +35,16 @@ var updateReference = function(pkgFile, pkgName, pkgVersion) {
 		var depsHash = thisPkg[key];
 
 		if (depsHash && depsHash[pkgName]) {
-			pkgRef = formatReference(depsHash[pkgName], pkgName, pkgVersion);
+			pkgRef = formatReference(depsHash[pkgName], pkgName, pkgTag);
 			console.log('Updating %s to %s in %s', depsHash[pkgName], pkgRef, pkgFile);
 			depsHash[pkgName] = pkgRef;
 		}
 	});
 
 	if (pkgRef) {
-		fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+		if (!args.test) {
+			fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+		}
 		console.log('Successfully updated %s', pkgFile);
 	}
 };
@@ -46,8 +62,8 @@ var bumpdep = function(name, tag) {
 if (fs.existsSync(buildProps)) {
 	buildProps = require(buildProps);
 	Object.keys(buildProps).forEach(function(pkgName) {
-		var pkgVersion = buildProps[pkgName];
-		console.log('Upstream dependency changes from: %s@%s',pkgName,pkgVersion);
-		bumpdep(pkgName,pkgVersion);
+		var pkgTag = buildProps[pkgName];
+		console.log('Upstream dependency changes from: %s@%s',pkgName,pkgTag);
+		bumpdep(pkgName,pkgTag);
 	});
 }
