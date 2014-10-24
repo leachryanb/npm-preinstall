@@ -23,6 +23,17 @@ This will install the utility to your local bin folder
 
 	$ npm-preinstall
 
+`npm-preinstall`, as indicated should be run prior to running `npm install`.  In Jenkins, you could add build actions as follows:
+
+	if [[ `which npm-preinstall` != *npm-preinstall* ]]; then \
+		npm install -g git+http://as-gitmaster:7990/scm/rd/npm-preinstall.git; \
+	fi
+
+	npm-preinstall
+	npm install
+	grunt release --scmtrigger=${BUILD_CAUSE_SCMTRIGGER}
+
+
 npm-preinstall will look for a `build.properties.json` file in the current working directory.  The specific format for that json should be as follows:
 
 	{
@@ -32,3 +43,9 @@ npm-preinstall will look for a `build.properties.json` file in the current worki
 * Where `packageName` is the exact `name` property from the package.json or bower.json file and where `packageTag` is the exact tag reference in the target repo.
 * Reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
 * Works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
+
+### Options:
+The only argument available in this version is `--test`.  If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
+
+### Roadmap:
+In future, this utility may support specifying the filename and file format of the properties file.
