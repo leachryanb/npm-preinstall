@@ -51,10 +51,11 @@ npm-preinstall will look for a `build.properties.json` file in the current worki
 * Reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
 * Works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
 
-### Arguments:
-#### `--test` If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
+### Flags:
 
-#### `--latest` If specified, all references will be set to `latest` regardless of versions specified in any `build.properties.json` file.  This is useful for reseting to latest when merging back to a development branch.
+`--test` If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
+
+`--latest` If specified, all references will be set to `latest` regardless of versions specified in any `build.properties.json` file.  This is useful for reseting to latest when merging back to a development branch.
 
 ### Roadmap:
 In future, this utility may support specifying the filename and file format of the properties file.
