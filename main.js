@@ -19,9 +19,6 @@ program.args.forEach(function(val) {
 });
 
 var formatReference = function(pkgRef, pkgName, pkgTag) {
-	if (args.latest) {
-		pkgTag = 'latest';
-	}
 	if (/#|\/\//g.test(pkgRef)) {
 		pkgRef = pkgRef.split('#')[0];
 		return pkgRef + '#' + pkgTag;
@@ -70,3 +67,9 @@ if (fs.existsSync(buildProps)) {
 		bumpdep(pkgName,pkgTag);
 	});
 }
+
+module.exports = {
+	bumpdep: bumpdep,
+	updateReference: updateReference,
+	formatReference: formatReference
+};
