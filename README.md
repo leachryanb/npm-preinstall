@@ -2,7 +2,7 @@
 
 ## Node command line utility
 
-### Use case
+### Use case:
 The intended use of this plugin is in a sequential release candidate CI build flow where a version bump in an upstream package should necessitate a change in the referenced version in a downstream project.
 
 Consider the following dependency graph:
@@ -19,7 +19,7 @@ If a code change is committed to ProjectA or ProjectB, in order for ProjectC to 
 
 This will install the utility to your local bin folder
 
-### Usage
+### Usage:
 
 	$ npm-preinstall
 
