@@ -1,0 +1,34 @@
+# npm-preinstall
+
+## Node command line utility
+
+### Use case
+The intended use of this plugin is in a sequential release candidate CI build flow where a version bump in an upstream package should necessitate a change in the referenced version in a downstream project.
+
+Consider the following dependency graph:
+
+	ProjectC@0.0.1
+	├─┬ ProjectB@0.0.2
+	│ ├─┬ ProjectA@0.0.3
+
+If a code change is committed to ProjectA or ProjectB, in order for ProjectC to be 100% frozen and reproducible it needs to have its references to ProjectA or B updated when they change, prior to doing an install.  Once the hard version has been installed, a shrinkwrap will take care of baking the entire stack.
+
+### Installation:
+
+	npm install -g git+http://as-gitmaster:7990/scm/rd/npm-preinstall.git; \
+
+This will install the utility to your local bin folder
+
+### Usage
+
+	$ npm-preinstall
+
+npm-preinstall will look for a `build.properties.json` file in the current working directory.  The specific format for that json should be as follows (where `packageName` is the exact `name` property from the package.json or bower.json file and where `packageTag` is the exact tag reference in the target repo.  ):
+
+	{
+		"packageName": "packageTag"
+	}
+
+It reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
+
+It works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
