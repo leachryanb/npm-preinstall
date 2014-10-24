@@ -53,9 +53,9 @@ npm-preinstall will look for a `build.properties.json` file in the current worki
 
 ### Flags:
 
-`--test` If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
+**`--test`** If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
 
-`--latest` If specified, all references will be set to `latest` regardless of versions specified in any `build.properties.json` file.  This is useful for reseting to latest when merging back to a development branch.
+**`--latest`** If specified, all references will be set to `latest` regardless of versions specified in any `build.properties.json` file.  This is useful for reseting to latest when merging back to a development branch.
 
 ### Roadmap:
 In future, this utility may support specifying the filename and file format of the properties file.
