@@ -23,12 +23,12 @@ This will install the utility to your local bin folder
 
 	$ npm-preinstall
 
-npm-preinstall will look for a `build.properties.json` file in the current working directory.  The specific format for that json should be as follows (where `packageName` is the exact `name` property from the package.json or bower.json file and where `packageTag` is the exact tag reference in the target repo.  ):
+npm-preinstall will look for a `build.properties.json` file in the current working directory.  The specific format for that json should be as follows:
 
 	{
 		"packageName": "packageTag"
 	}
 
-It reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
-
-It works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
+* Where `packageName` is the exact `name` property from the package.json or bower.json file and where `packageTag` is the exact tag reference in the target repo.
+* Reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
+* Works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
