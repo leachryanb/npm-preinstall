@@ -1,12 +1,8 @@
-#!/usr/bin/env node
-
 var fs = require('fs'),
-	path = require('path'),
 	findup = require('findup-sync'),
 	program = require('commander'),
 	semver = require('semver'),
 	pkg = require('./package.json'),
-	buildProps = path.resolve(process.cwd(),'build.properties.json'),
 	args = {};
 
 program
@@ -58,15 +54,6 @@ var bumpdep = function(name, tag) {
 		}
 	});
 };
-
-if (fs.existsSync(buildProps)) {
-	buildProps = require(buildProps);
-	Object.keys(buildProps).forEach(function(pkgName) {
-		var pkgTag = buildProps[pkgName];
-		console.log('Upstream dependency changes from: %s@%s',pkgName,pkgTag);
-		bumpdep(pkgName,pkgTag);
-	});
-}
 
 module.exports = {
 	bumpdep: bumpdep,

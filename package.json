@@ -14,6 +14,6 @@
   },
   "main": "main.js",
   "bin": {
-    "npm-preinstall": "main.js"
+    "npm-preinstall": "cli.js"
   }
 }
