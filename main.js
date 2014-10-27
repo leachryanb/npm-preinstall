@@ -45,6 +45,24 @@ var updateReference = function(pkgFile, pkgName, pkgTag) {
 	}
 };
 
+var syncCurrentPackage = function(tag) {
+	var thisPkg;
+
+	['package.json','bower.json'].forEach(function(pkgFile){
+		var pkgPath = findup(pkgFile);
+
+		if (fs.existsSync(pkgPath)) {
+			thisPkg = require(pkgFile);
+			thisPkg.version = semver.clean(tag);
+
+			if (!args.test) {
+				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+			}
+			console.log('Successfully updated %s', pkgFile);
+		}
+	});
+};
+
 var bumpdep = function(name, tag) {
 	['package.json','bower.json'].forEach(function(pkgFile){
 		var pkgPath = findup(pkgFile);
@@ -56,6 +74,7 @@ var bumpdep = function(name, tag) {
 };
 
 module.exports = {
+	syncCurrentPackage: syncCurrentPackage,
 	bumpdep: bumpdep,
 	updateReference: updateReference,
 	formatReference: formatReference
