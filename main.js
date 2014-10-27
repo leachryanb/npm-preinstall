@@ -52,7 +52,7 @@ var syncCurrentPackage = function(tag) {
 		var pkgPath = findup(pkgFile);
 
 		if (fs.existsSync(pkgPath)) {
-			thisPkg = require(pkgFile);
+			thisPkg = require(pkgPath);
 			thisPkg.version = semver.clean(tag);
 
 			if (!args.test) {
