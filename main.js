@@ -3,7 +3,8 @@ var fs = require('fs'),
 	program = require('commander'),
 	semver = require('semver'),
 	pkg = require('./package.json'),
-	args = {};
+	args = {},
+	outdated = {};
 
 program
 	.version(pkg.version)
@@ -25,7 +26,7 @@ var formatReference = function(pkgRef, pkgName, pkgTag) {
 
 var updateReference = function(pkgFile, pkgName, pkgTag) {
 	var thisPkg = require(pkgFile),
-		pkgRef;
+		pkgRef, outdated = {};
 
 	['dependencies', 'devDependencies'].forEach(function(key) {
 		var depsHash = thisPkg[key];
@@ -34,12 +35,16 @@ var updateReference = function(pkgFile, pkgName, pkgTag) {
 			pkgRef = formatReference(depsHash[pkgName], pkgName, pkgTag);
 			console.log('Updating %s to %s in %s', depsHash[pkgName], pkgRef, pkgFile);
 			depsHash[pkgName] = pkgRef;
+			outdated[pkgName] = pkgRef;
 		}
 	});
 
 	if (pkgRef) {
 		if (!args.test) {
 			fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+			if (Object.keys(outdated)) {
+				fs.writeFileSync(pkgFile.replace('.json','.outdated.json'), JSON.stringify(outdated, null, '  '));
+			}
 		}
 		console.log('Successfully updated %s', pkgFile);
 	}
