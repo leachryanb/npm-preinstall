@@ -3,8 +3,7 @@ var fs = require('fs'),
 	program = require('commander'),
 	semver = require('semver'),
 	pkg = require('./package.json'),
-	args = {},
-	outdated = {};
+	args = {};
 
 program
 	.version(pkg.version)
