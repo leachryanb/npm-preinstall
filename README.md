@@ -49,7 +49,9 @@ npm-preinstall will look for a `build.properties.json` file in the current worki
 
 * Where `packageName` is the exact `name` property from the package.json or bower.json file and where `packageTag` is the exact tag reference in the target repo.
 * Reads in dependency package versions from a build.properties.json file and updates the same packages found in package.json and bower.json, parsing url refs as necessary.
+* Whenever a discrepency is found between an installed package version and the version listed in the build.properties.json file, that package will be recorded in a `[package|bower].outdated.json` file, depending upon which manifest file contained the discrepency.
 * Works in conjunction with the grunt-eis-release plugin, the output of which is a build.properties.json file, but any build process which deposits that file with the appropriate versions in the downstream working directory will work.
+* grunt-eis-release uses [package|bower].outdated.json to determine whether upstream changes should require it to bump its package.
 
 ### Flags:
 
