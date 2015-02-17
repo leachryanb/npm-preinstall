@@ -25,20 +25,21 @@ var formatReference = function(pkgRef, pkgName, pkgTag) {
 
 var updateReference = function(pkgFile, pkgName, pkgTag) {
 	var thisPkg = require(pkgFile),
-		pkgRef, outdated = {};
+		oldRef, newRef, outdated = {};
 
 	['dependencies', 'devDependencies'].forEach(function(key) {
 		var depsHash = thisPkg[key];
 
 		if (depsHash && depsHash[pkgName]) {
-			pkgRef = formatReference(depsHash[pkgName], pkgName, pkgTag);
-			console.log('Updating %s to %s in %s', depsHash[pkgName], pkgRef, pkgFile);
-			depsHash[pkgName] = pkgRef;
-			outdated[pkgName] = pkgRef;
+			oldRef = depsHash[pkgName];
+			newRef = formatReference(oldRef, pkgName, pkgTag);
+			console.log('%s outdated (%s > %s) in %s', pkgName, oldRef, newRef, pkgFile);
+			depsHash[pkgName] = newRef;
+			outdated[pkgName] = newRef;
 		}
 	});
 
-	if (pkgRef) {
+	if (newRef) {
 		if (!args.test) {
 			if (!args['no-sync']) {
 				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
