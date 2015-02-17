@@ -42,12 +42,12 @@ var updateReference = function(pkgFile, pkgName, pkgTag) {
 		if (!args.test) {
 			if (!args['no-sync']) {
 				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+				console.log('Successfully updated %s', pkgFile);
 			}
 			if (Object.keys(outdated)) {
 				fs.writeFileSync(pkgFile.replace('.json','.outdated.json'), JSON.stringify(outdated, null, '  '));
 			}
 		}
-		console.log('Successfully updated %s', pkgFile);
 	}
 };
 
