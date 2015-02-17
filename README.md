@@ -55,7 +55,9 @@ npm-preinstall will look for a `build.properties.json` file in the current worki
 
 ### Flags:
 
-**`--test`** If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`).
+**`--test`** If specified, stdout will log the actions, but not actually rewrite any files (`package.json`, `bower.json`, `package.outdated.json`, `bower.outdated.json`).
+
+**`--no-sync`** If specified, process with not rewrite `package.json`, `bower.json`, but will still write `package.outdated.json` and/or `bower.outdated.json` so that downstream jobs are aware of changes.
 
 ### Roadmap:
 In future, this utility may support specifying the filename and file format of the properties file.

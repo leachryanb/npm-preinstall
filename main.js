@@ -40,7 +40,9 @@ var updateReference = function(pkgFile, pkgName, pkgTag) {
 
 	if (pkgRef) {
 		if (!args.test) {
-			fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+			if (!args['no-sync']) {
+				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+			}
 			if (Object.keys(outdated)) {
 				fs.writeFileSync(pkgFile.replace('.json','.outdated.json'), JSON.stringify(outdated, null, '  '));
 			}
