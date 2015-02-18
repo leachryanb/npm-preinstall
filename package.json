@@ -1,7 +1,7 @@
 {
   "name": "npm-preinstall",
   "description": "Reads in package versions from build.properties.json and updates the same packages found in package.json and bower.json, parsing url ref as necessary.",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "readme": "README.md",
   "repository": {
     "type": "git",
