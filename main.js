@@ -15,6 +15,14 @@ program.args.forEach(function(val) {
 	args[val[0]] = val.length>1 ? val[1] : true;
 });
 
+var getReferenceVersion = function(pkgRef) {
+	var tag = pkgRef;
+	if (/#|\/\//g.test(tag)) {
+		tag = pkgRef.split('#')[1];
+	}
+	return semver.clean(tag);
+};
+
 var formatReference = function(pkgRef, pkgName, pkgTag) {
 	if (/#|\/\//g.test(pkgRef)) {
 		pkgRef = pkgRef.split('#')[0];
@@ -26,29 +34,30 @@ var formatReference = function(pkgRef, pkgName, pkgTag) {
 
 var updateReference = function(pkgFile, pkgName, pkgTag) {
 	var thisPkg = require(pkgFile),
-		oldRef, newRef, outdated = {};
+		oldRef, newRef, oldVersion, newVersion, outdated = {};
 
 	['dependencies', 'devDependencies'].forEach(function(key) {
 		var depsHash = thisPkg[key];
 
 		if (depsHash && depsHash[pkgName]) {
 			oldRef = depsHash[pkgName];
+			oldVersion = getReferenceVersion(oldRef);
 			newRef = formatReference(oldRef, pkgName, pkgTag);
-			console.log('%s outdated (%s > %s) in %s', pkgName, oldRef, newRef, pkgFile);
-			depsHash[pkgName] = newRef;
-			outdated[pkgName] = newRef;
+			newVersion = getReferenceVersion(pkgTag);
+			if (newVersion !== oldVersion) {
+				console.log('%s outdated (old: %s, new: %s) in %s', pkgName, oldVersion, newVersion, path.basename(pkgFile));
+				depsHash[pkgName] = outdated[pkgName] = newRef;
+			}
 		}
 	});
 
-	if (newRef) {
+	if (Object.keys(outdated)) {
 		if (!args.test) {
 			if (!args['no-sync']) {
 				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
 				console.log('Successfully updated %s', pkgFile);
 			}
-			if (Object.keys(outdated)) {
-				fs.writeFileSync(pkgFile.replace('.json','.outdated.json'), JSON.stringify(outdated, null, '  '));
-			}
+			fs.writeFileSync(pkgFile.replace('.json','.outdated.json'), JSON.stringify(outdated, null, '  '));
 		}
 	}
 };
