@@ -3,6 +3,7 @@ var fs = require('fs'),
 	program = require('commander'),
 	semver = require('semver'),
 	pkg = require('./package.json'),
+	path = require('path'),
 	args = {};
 
 program
@@ -65,12 +66,12 @@ var syncCurrentPackage = function(tag) {
 
 			if (semver.gt(newVersion, oldVersion)) {
 				thisPkg.version = semver.clean(tag);
+				if (!args.test) {
+					fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
+				}
+				console.log('Syncing version in %s to: %s', path.basename(pkgFile), tag);
 			}
 
-			if (!args.test) {
-				fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
-			}
-			console.log('Successfully updated %s', pkgFile);
 		}
 	});
 };
