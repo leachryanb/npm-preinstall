@@ -62,29 +62,6 @@ var updateReference = function(pkgFile, pkgName, pkgTag) {
 	}
 };
 
-var syncCurrentPackage = function(tag) {
-	var thisPkg;
-
-	['package.json','bower.json'].forEach(function(pkgFile){
-		var pkgPath = findup(pkgFile), oldVersion, newVersion;
-
-		if (fs.existsSync(pkgPath)) {
-			thisPkg = require(pkgPath);
-			oldVersion = thisPkg.version;
-			newVersion = semver.clean(tag);
-
-			if (semver.gt(newVersion, oldVersion)) {
-				thisPkg.version = semver.clean(tag);
-				if (!args.test) {
-					fs.writeFileSync(pkgFile, JSON.stringify(thisPkg, null, '  '));
-				}
-				console.log('Syncing version in %s to: %s', path.basename(pkgFile), tag);
-			}
-
-		}
-	});
-};
-
 var bumpdep = function(name, tag) {
 	['package.json','bower.json'].forEach(function(pkgFile){
 		var pkgPath = findup(pkgFile);
@@ -96,7 +73,6 @@ var bumpdep = function(name, tag) {
 };
 
 module.exports = {
-	syncCurrentPackage: syncCurrentPackage,
 	bumpdep: bumpdep,
 	updateReference: updateReference,
 	formatReference: formatReference
